@@ -4,7 +4,8 @@
 
         var settings = $.extend({
             // These are the defaults.
-            switchSpeed: 1000
+            switchSpeed: 1000,
+            autoSwitchInterval: 10000
         }, options);
 
         return this.each(function() {
@@ -18,9 +19,64 @@
             function findCurrentItemIndex() {
                 for (var i = 0; i < items.length; i++) {
                     if (items[i].css('opacity') != "0") {
-                        console.log(items[i]);
                         return i;
                     }
+                }
+            }
+
+            function switchToNextSlide() {
+                var currentItemIndex = findCurrentItemIndex();
+
+                if (currentItemIndex < (items.length - 1)) {
+                    items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[currentItemIndex].next('.item').animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                } else {
+                    items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[0].animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                }
+            }
+
+            function switchToPrevSlide() {
+                var currentItemIndex = findCurrentItemIndex();
+
+                if (currentItemIndex === 0) {
+                    items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[items.length - 1].animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                } else {
+                    items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[currentItemIndex].prev('.item').animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
                 }
             }
 
@@ -64,31 +120,7 @@
                     'border-radius': '50%'
                 })
                 .click(function(e) {
-                    var currentItemIndex = findCurrentItemIndex();
-
-                    if(currentItemIndex < (items.length - 1)){
-                        items[currentItemIndex].animate({
-                            opacity: 0
-                        },
-                        settings.switchSpeed,
-                        function() {
-                            items[currentItemIndex].next('.item').animate({
-                                    opacity: 1
-                                },
-                                settings.switchSpeed);
-                        });
-                    } else {
-                        items[currentItemIndex].animate({
-                            opacity: 0
-                        },
-                        settings.switchSpeed,
-                        function() {
-                            items[0].animate({
-                                    opacity: 1
-                                },
-                                settings.switchSpeed);
-                        });
-                    }
+                    switchToNextSlide();
                 });
 
             $prevContainer.css({
@@ -103,31 +135,7 @@
                     'border-radius': '50%'
                 })
                 .click(function(e) {
-                    var currentItemIndex = findCurrentItemIndex();
-                    
-                    if (currentItemIndex === 0){
-                        items[currentItemIndex].animate({
-                            opacity: 0
-                        },
-                        settings.switchSpeed,
-                        function() {
-                            items[items.length - 1].animate({
-                                    opacity: 1
-                                },
-                                settings.switchSpeed);
-                        });
-                    } else {
-                        items[currentItemIndex].animate({
-                            opacity: 0
-                        },
-                        settings.switchSpeed,
-                        function() {
-                            items[currentItemIndex].prev('.item').animate({
-                                    opacity: 1
-                                },
-                                settings.switchSpeed);
-                        });
-                    }
+                    switchToPrevSlide();
                 });
 
             $mainContainer.children('.item').each(function() {
@@ -168,6 +176,10 @@
                 'border-radius': '50%',
                 'margin': '5px'
             });
+
+            setInterval(function() { 
+                switchToNextSlide();
+            }, settings.autoSwitchInterval);
         });
     };
 
