@@ -12,10 +12,20 @@
             var items = [];
             var height = $mainContainer.find('.item').first().height();
             var $dotsConteiner = $('<div class="dots"></div>');
-            //var indexOfActiveItem = 0;
+            var $nextContainer = $('<div class="next">></div>');
+            var $prevContainer = $('<div class="prev"><</div>');
+
+            function findCurrentItemIndex() {
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].css('opacity') != "0") {
+                        console.log(items[i]);
+                        return i;
+                    }
+                }
+            }
 
             $mainContainer
-                .append($dotsConteiner)
+                .append($dotsConteiner, $nextContainer, $prevContainer)
                 .css({
                     'min-width': '100%',
                     'height': height,
@@ -41,6 +51,84 @@
                 'z-index': '100000',
                 'background-color': 'rgba(129, 124, 122, 0.9)'
             });
+
+            $nextContainer.css({
+                    'position': 'absolute',
+                    'top': '50%',
+                    'right': '0',
+                    'text-align': 'center',
+                    'z-index': '100000',
+                    'background-color': 'rgba(129, 124, 122, 0.9)',
+                    'width': '20px',
+                    'height': '20px',
+                    'border-radius': '50%'
+                })
+                .click(function(e) {
+                    var currentItemIndex = findCurrentItemIndex();
+
+                    if(currentItemIndex < (items.length - 1)){
+                        items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[currentItemIndex].next('.item').animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                    } else {
+                        items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[0].animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                    }
+                });
+
+            $prevContainer.css({
+                    'position': 'absolute',
+                    'top': '50%',
+                    'left': '0',
+                    'text-align': 'center',
+                    'z-index': '100000',
+                    'background-color': 'rgba(129, 124, 122, 0.9)',
+                    'width': '20px',
+                    'height': '20px',
+                    'border-radius': '50%'
+                })
+                .click(function(e) {
+                    var currentItemIndex = findCurrentItemIndex();
+                    
+                    if (currentItemIndex === 0){
+                        items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[items.length - 1].animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                    } else {
+                        items[currentItemIndex].animate({
+                            opacity: 0
+                        },
+                        settings.switchSpeed,
+                        function() {
+                            items[currentItemIndex].prev('.item').animate({
+                                    opacity: 1
+                                },
+                                settings.switchSpeed);
+                        });
+                    }
+                });
 
             $mainContainer.children('.item').each(function() {
                 var self = $(this);
