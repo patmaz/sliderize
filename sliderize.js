@@ -3,7 +3,6 @@
     $.fn.sliderize = function(options) {
 
         var settings = $.extend({
-            // These are the defaults.
             switchSpeed: 1000,
             autoSwitchInterval: 10000
         }, options);

@@ -1,5 +1,5 @@
 # Sliderize BETA
-awfully simple photo slider for your website :)
+awfully simple photo slider :)
 
 ##How to use
 ###html structure
@@ -17,8 +17,11 @@ note that "item" class' name is obligatory!
 
 ### js function
 ```javascript
-$('.slides').sliderize({ switchSpeed: 100 });
+$('.slides').sliderize({
+    switchSpeed: 100,
+    autoSwitchInterval: 10000
+});
 ```
-default switch speed is 1000 ms
+the above values are the defaults
 
 this plugin depends on jQuery
